@@ -17,8 +17,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("it's alive 🧟‍♂️");
 });
 
-app.get("/products", Products);
-app.post("/products", Products);
+app.use("/products", Products);
 
 app.post("/register", register);
 app.post("/login", login);
