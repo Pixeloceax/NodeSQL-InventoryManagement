@@ -124,12 +124,87 @@ export async function getProductsByCategory(category: string) {
   }
 }
 
-// get by supplier
-// get by serialNumber
+export async function getProductsBySupplier(supplier: string) {
+  try {
+    const products = await Product.findAll({
+      where: {
+        supplier,
+      },
+    });
+    return products;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération des produits par fournisseur :",
+      error
+    );
+    throw error;
+  }
+}
 
-// sort by price
-// sort by quantity
-// sort by reorderThreshold
-// sort by location
+export async function getProductBySerialNumber(serialNumber: string) {
+  try {
+    const product = await Product.findOne({
+      where: {
+        serialNumber,
+      },
+    });
+    return product;
+  } catch (error) {
+    console.error(
+      "Erreur lors de la récupération du produit par numéro de série :",
+      error
+    );
+    throw error;
+  }
+}
 
-// combine sort
+export async function sortProductsByPrice() {
+  try {
+    const products = await Product.findAll({
+      order: [["price", "ASC"]],
+    });
+    return products;
+  } catch (error) {
+    console.error("Erreur lors du tri des produits par prix :", error);
+    throw error;
+  }
+}
+
+export async function sortProductsByQuantity() {
+  try {
+    const products = await Product.findAll({
+      order: [["quantity", "DESC"]],
+    });
+    return products;
+  } catch (error) {
+    console.error("Erreur lors du tri des produits par quantité :", error);
+    throw error;
+  }
+}
+
+export async function sortProductsByReorderThreshold() {
+  try {
+    const products = await Product.findAll({
+      order: [["reorderThreshold", "ASC"]],
+    });
+    return products;
+  } catch (error) {
+    console.error(
+      "Erreur lors du tri des produits par seuil de réapprovisionnement :",
+      error
+    );
+    throw error;
+  }
+}
+
+export async function sortProductsByLocation() {
+  try {
+    const products = await Product.findAll({
+      order: [["location", "ASC"]],
+    });
+    return products;
+  } catch (error) {
+    console.error("Erreur lors du tri des produits par emplacement :", error);
+    throw error;
+  }
+}
