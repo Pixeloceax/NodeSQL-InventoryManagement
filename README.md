@@ -64,6 +64,6 @@ No license.
 
 ## Contributors
 
-- [Axel Valentín](github.com/Pixeloceax)
+- [Axel Valentín](https://github.com/Pixeloceax)
 
 Feel free to contribute to this project by submitting pull requests or reporting issues.
