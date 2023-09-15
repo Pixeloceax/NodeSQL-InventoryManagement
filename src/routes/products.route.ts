@@ -6,6 +6,12 @@ import {
   updateProductById,
   deleteProductById,
   getProductsByCategory,
+  getProductsBySupplier,
+  getProductBySerialNumber,
+  sortProductsByLocation,
+  sortProductsByQuantity,
+  sortProductsByPrice,
+  sortProductsByReorderThreshold,
 } from "../controllers/productController";
 
 const router = express.Router();
@@ -127,6 +133,78 @@ router.delete("/:id", async (req, res) => {
 router.get("/category/:category", async (req, res) => {
   try {
     const products = await getProductsByCategory(req.params.category);
+    res.json(products);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des produits :", error);
+    res.status(500).json({
+      message: "Une erreur est survenue lors de la récupération des produits.",
+    });
+  }
+});
+
+router.get("/supplier/:supplier", async (req, res) => {
+  try {
+    const products = await getProductsBySupplier(req.params.supplier);
+    res.json(products);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des produits :", error);
+    res.status(500).json({
+      message: "Une erreur est survenue lors de la récupération des produits.",
+    });
+  }
+});
+
+router.get("/serialNumber/:serialNumber", async (req, res) => {
+  try {
+    const product = await getProductBySerialNumber(req.params.serialNumber);
+    res.json(product);
+  } catch (error) {
+    console.error("Erreur lors de la récupération du produit :", error);
+    res.status(500).json({
+      message: "Une erreur est survenue lors de la récupération du produit.",
+    });
+  }
+});
+
+router.get("/sort/location", async (req, res) => {
+  try {
+    const products = await sortProductsByLocation();
+    res.json(products);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des produits :", error);
+    res.status(500).json({
+      message: "Une erreur est survenue lors de la récupération des produits.",
+    });
+  }
+});
+
+router.get("/sort/quantity", async (req, res) => {
+  try {
+    const products = await sortProductsByQuantity();
+    res.json(products);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des produits :", error);
+    res.status(500).json({
+      message: "Une erreur est survenue lors de la récupération des produits.",
+    });
+  }
+});
+
+router.get("/sort/price", async (req, res) => {
+  try {
+    const products = await sortProductsByPrice();
+    res.json(products);
+  } catch (error) {
+    console.error("Erreur lors de la récupération des produits :", error);
+    res.status(500).json({
+      message: "Une erreur est survenue lors de la récupération des produits.",
+    });
+  }
+});
+
+router.get("/sort/reorderThreshold", async (req, res) => {
+  try {
+    const products = await sortProductsByReorderThreshold();
     res.json(products);
   } catch (error) {
     console.error("Erreur lors de la récupération des produits :", error);
