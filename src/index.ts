@@ -1,5 +1,9 @@
 const http = require("http");
 const app = require("./app");
+import "dotenv/config";
+require("dotenv").config();
+
+import { checkStockAndSendEmail } from "./utils/stockEmailNotifier.utils";
 
 const normalizePort = (val: any) => {
   const port = parseInt(val, 10);
@@ -43,5 +47,12 @@ server.on("listening", () => {
   const bind = typeof address === "string" ? "pipe " + address : "port " + port;
   console.log("Listening on " + bind);
 });
+
+const interval = () => {
+  setInterval(() => {
+    checkStockAndSendEmail();
+  }, 10000);
+};
+interval();
 
 server.listen(port);
