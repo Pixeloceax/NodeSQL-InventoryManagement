@@ -6,6 +6,7 @@ import login from "./routes/login.route";
 import register from "./routes/register.route";
 import { authenticateToken } from "./middleware/auth";
 import { getUserInfo } from "./controllers/userController";
+import { updateQuantity } from "./controllers/quantityController";
 
 dbConnect();
 listTables();
@@ -24,6 +25,11 @@ app.post("/login", login);
 
 app.get("/user", authenticateToken, getUserInfo);
 
+app.post("/quantity/:id/:quantity", (req: Request, res: Response) => {
+  const { id, quantity } = req.params;
+  updateQuantity(id, parseInt(quantity));
+  res.send("Quantity updated successfully");
+});
 app.post;
 
 module.exports = app;
