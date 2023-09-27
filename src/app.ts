@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { dbConnect } from "./database/db";
 import listTables from "./database/tableManager";
 import Products from "./routes/products.route";
+import EmailSubscription from "./routes/EmailSubscription.route";
 import login from "./routes/login.route";
 import register from "./routes/register.route";
 import { authenticateToken } from "./middleware/auth";
@@ -30,6 +31,7 @@ app.post("/quantity/:id/:quantity", (req: Request, res: Response) => {
   updateQuantity(id, parseInt(quantity));
   res.send("Quantity updated successfully");
 });
-app.post;
+
+app.use("/email-subscription", EmailSubscription);
 
 module.exports = app;
