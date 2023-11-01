@@ -1,6 +1,7 @@
 # Dossiers à ignorer
 node_modules/
 dist/
+coverage/
 
 # Fichiers à ignorer
 *.js
@@ -9,3 +10,4 @@ dist/
 *.log
 *.env
 package-lock.json
+
