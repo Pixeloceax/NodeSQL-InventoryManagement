@@ -26,11 +26,7 @@ app.post("/login", login);
 
 app.get("/user", authenticateToken, getUserInfo);
 
-app.post("/quantity/:id/:quantity", (req: Request, res: Response) => {
-  const { id, quantity } = req.params;
-  updateQuantity(id, parseInt(quantity));
-  res.send("Quantity updated successfully");
-});
+app.post("/quantity/:id/:quantity", updateQuantity);
 
 app.use("/email-subscription", EmailSubscription);
 
