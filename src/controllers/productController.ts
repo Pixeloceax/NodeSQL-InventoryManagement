@@ -1,29 +1,40 @@
 import Product, { ProductAttributes } from "../models/Product.model";
+import { Request, Response } from "express";
 
-export async function getAllProducts() {
+export async function getAllProducts(req: Request, res: Response) {
   try {
     const products = await Product.findAll();
-    return products;
+    res.json(products);
   } catch (error) {
-    throw new Error("Error while retrieving products: " + error);
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching products." });
   }
 }
 
-export async function addProduct(
-  name: string,
-  price: number,
-  description: string,
-  category: string,
-  quantity: number,
-  supplier: string,
-  reorderThreshold: number,
-  location: string,
-  taxRate: number,
-  serialNumber?: string,
-  image?: string,
-  notes?: string
-) {
+export async function addProduct(req: Request, res: Response) {
+  const {
+    name,
+    price,
+    description,
+    category,
+    quantity,
+    supplier,
+    reorderThreshold,
+    location,
+    taxRate,
+    serialNumber,
+    image,
+    notes,
+  } = req.body;
+
   try {
+    const existingProduct = await Product.findOne({ where: { name: name } });
+
+    if (existingProduct) {
+      throw new Error("Product already exists in the database");
+    }
+
     const newProduct = await Product.create({
       name,
       price,
@@ -38,41 +49,57 @@ export async function addProduct(
       notes,
       taxRate,
     } as ProductAttributes);
-    return newProduct;
-  } catch (error) {
-    throw new Error("Error while adding the product: " + error);
-  }
-}
 
-export async function getProductById(id: string) {
-  try {
-    const product = await Product.findByPk(id);
-    return product;
-  } catch (error) {
-    throw new Error("Error while retrieving the product: " + error);
-  }
-}
-
-export async function updateProductById(
-  id: string,
-  name: string,
-  price: number,
-  description: string,
-  category: string,
-  quantity: number,
-  supplier: string,
-  reorderThreshold: number,
-  location: string,
-  taxRate: number,
-  serialNumber?: string,
-  image?: string,
-  notes?: string
-) {
-  try {
-    const product = await Product.findByPk(id);
-    if (!product) {
-      throw new Error("Product not found");
+    if (!newProduct) {
+      throw new Error("Error while creating the product");
     }
+
+    res.json(newProduct);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occurred while adding the product." });
+  }
+}
+
+export async function getProductById(req: Request, res: Response) {
+  try {
+    const product = await Product.findByPk(req.params.id);
+    if (!product) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+    res.json(product);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "An error occurred while fetching the product." });
+  }
+}
+
+export async function updateProductById(req: Request, res: Response) {
+  const {
+    name,
+    price,
+    description,
+    category,
+    quantity,
+    supplier,
+    reorderThreshold,
+    location,
+    taxRate,
+    serialNumber,
+    image,
+    notes,
+  } = req.body;
+
+  try {
+    const product = await Product.findByPk(req.params.id);
+    if (!product) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+
     await product.update({
       name,
       price,
@@ -87,107 +114,131 @@ export async function updateProductById(
       notes,
       taxRate,
     } as ProductAttributes);
-    return product;
+
+    res.json(product);
   } catch (error) {
-    throw new Error("Error while updating the product: " + error);
+    res
+      .status(500)
+      .json({ message: "Error while updating the product: " + error });
   }
 }
 
-export async function deleteProductById(id: string) {
+export async function deleteProductById(req: Request, res: Response) {
   try {
-    const product = await Product.findByPk(id);
+    const product = await Product.findByPk(req.params.id);
     if (!product) {
-      throw new Error("Product not found");
+      res.status(404).json({ message: "Product not found" });
+      return;
     }
     await product.destroy();
+    res.json({ message: "Product deleted successfully" });
   } catch (error) {
-    throw new Error("Error while deleting the product: " + error);
+    res
+      .status(500)
+      .json({ message: "Error while deleting the product: " + error });
   }
 }
 
-export async function getProductsByCategory(category: string) {
+export async function getProductsByCategory(req: Request, res: Response) {
   try {
     const products = await Product.findAll({
       where: {
-        category,
+        category: req.params.category,
       },
     });
-    return products;
+    res.json(products);
   } catch (error) {
-    throw new Error("Error while retrieving products: " + error);
+    res.status(500).json({
+      message: "Error while retrieving products by category: " + error,
+    });
   }
 }
 
-export async function getProductsBySupplier(supplier: string) {
+export async function getProductsBySupplier(req: Request, res: Response) {
   try {
     const products = await Product.findAll({
       where: {
-        supplier,
+        supplier: req.params.supplier,
       },
     });
-    return products;
+    res.json(products);
   } catch (error) {
-    throw new Error("Error while retrieving products by supplier: " + error);
+    res.status(500).json({
+      message: "Error while retrieving products by supplier: " + error,
+    });
   }
 }
 
-export async function getProductBySerialNumber(serialNumber: string) {
+export async function getProductBySerialNumber(req: Request, res: Response) {
   try {
     const product = await Product.findOne({
       where: {
-        serialNumber,
+        serialNumber: req.params.serialNumber,
       },
     });
-    return product;
+    if (!product) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+    res.json(product);
   } catch (error) {
-    throw new Error(
-      "Error while retrieving the product by serial number: " + error
-    );
+    res.status(500).json({
+      message: "Error while retrieving product by serial number: " + error,
+    });
   }
 }
 
-export async function sortProductsByPrice() {
+export async function sortProductsByPrice(req: Request, res: Response) {
   try {
     const products = await Product.findAll({
       order: [["price", "ASC"]],
     });
-    return products;
+    res.json(products);
   } catch (error) {
-    throw new Error("Error while sorting products by price: " + error);
+    res
+      .status(500)
+      .json({ message: "Error while sorting products by price: " + error });
   }
 }
 
-export async function sortProductsByQuantity() {
+export async function sortProductsByQuantity(req: Request, res: Response) {
   try {
     const products = await Product.findAll({
       order: [["quantity", "DESC"]],
     });
-    return products;
+    res.json(products);
   } catch (error) {
-    throw new Error("Error while sorting products by quantity: " + error);
+    res
+      .status(500)
+      .json({ message: "Error while sorting products by quantity: " + error });
   }
 }
 
-export async function sortProductsByReorderThreshold() {
+export async function sortProductsByReorderThreshold(
+  req: Request,
+  res: Response
+) {
   try {
     const products = await Product.findAll({
       order: [["reorderThreshold", "ASC"]],
     });
-    return products;
+    res.json(products);
   } catch (error) {
-    throw new Error(
-      "Error while sorting products by reorder threshold: " + error
-    );
+    res.status(500).json({
+      message: "Error while sorting products by reorder threshold: " + error,
+    });
   }
 }
 
-export async function sortProductsByLocation() {
+export async function sortProductsByLocation(req: Request, res: Response) {
   try {
     const products = await Product.findAll({
       order: [["location", "ASC"]],
     });
-    return products;
+    res.json(products);
   } catch (error) {
-    throw new Error("Error while sorting products by location: " + error);
+    res
+      .status(500)
+      .json({ message: "Error while sorting products by location: " + error });
   }
 }
