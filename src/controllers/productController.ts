@@ -5,8 +5,7 @@ export async function getAllProducts() {
     const products = await Product.findAll();
     return products;
   } catch (error) {
-    console.error("Erreur lors de la récupération des produits :", error);
-    throw error;
+    throw new Error("Error while retrieving products: " + error);
   }
 }
 
@@ -41,8 +40,7 @@ export async function addProduct(
     } as ProductAttributes);
     return newProduct;
   } catch (error) {
-    console.error("Erreur lors de l'ajout du produit :", error);
-    throw error;
+    throw new Error("Error while adding the product: " + error);
   }
 }
 
@@ -51,8 +49,7 @@ export async function getProductById(id: string) {
     const product = await Product.findByPk(id);
     return product;
   } catch (error) {
-    console.error("Erreur lors de la récupération du produit :", error);
-    throw error;
+    throw new Error("Error while retrieving the product: " + error);
   }
 }
 
@@ -74,7 +71,7 @@ export async function updateProductById(
   try {
     const product = await Product.findByPk(id);
     if (!product) {
-      throw new Error("Produit introuvable");
+      throw new Error("Product not found");
     }
     await product.update({
       name,
@@ -92,8 +89,7 @@ export async function updateProductById(
     } as ProductAttributes);
     return product;
   } catch (error) {
-    console.error("Erreur lors de la mise à jour du produit :", error);
-    throw error;
+    throw new Error("Error while updating the product: " + error);
   }
 }
 
@@ -101,12 +97,11 @@ export async function deleteProductById(id: string) {
   try {
     const product = await Product.findByPk(id);
     if (!product) {
-      throw new Error("Produit introuvable");
+      throw new Error("Product not found");
     }
     await product.destroy();
   } catch (error) {
-    console.error("Erreur lors de la suppression du produit :", error);
-    throw error;
+    throw new Error("Error while deleting the product: " + error);
   }
 }
 
@@ -119,8 +114,7 @@ export async function getProductsByCategory(category: string) {
     });
     return products;
   } catch (error) {
-    console.error("Erreur lors de la récupération des produits :", error);
-    throw error;
+    throw new Error("Error while retrieving products: " + error);
   }
 }
 
@@ -133,11 +127,7 @@ export async function getProductsBySupplier(supplier: string) {
     });
     return products;
   } catch (error) {
-    console.error(
-      "Erreur lors de la récupération des produits par fournisseur :",
-      error
-    );
-    throw error;
+    throw new Error("Error while retrieving products by supplier: " + error);
   }
 }
 
@@ -150,11 +140,9 @@ export async function getProductBySerialNumber(serialNumber: string) {
     });
     return product;
   } catch (error) {
-    console.error(
-      "Erreur lors de la récupération du produit par numéro de série :",
-      error
+    throw new Error(
+      "Error while retrieving the product by serial number: " + error
     );
-    throw error;
   }
 }
 
@@ -165,8 +153,7 @@ export async function sortProductsByPrice() {
     });
     return products;
   } catch (error) {
-    console.error("Erreur lors du tri des produits par prix :", error);
-    throw error;
+    throw new Error("Error while sorting products by price: " + error);
   }
 }
 
@@ -177,8 +164,7 @@ export async function sortProductsByQuantity() {
     });
     return products;
   } catch (error) {
-    console.error("Erreur lors du tri des produits par quantité :", error);
-    throw error;
+    throw new Error("Error while sorting products by quantity: " + error);
   }
 }
 
@@ -189,11 +175,9 @@ export async function sortProductsByReorderThreshold() {
     });
     return products;
   } catch (error) {
-    console.error(
-      "Erreur lors du tri des produits par seuil de réapprovisionnement :",
-      error
+    throw new Error(
+      "Error while sorting products by reorder threshold: " + error
     );
-    throw error;
   }
 }
 
@@ -204,7 +188,6 @@ export async function sortProductsByLocation() {
     });
     return products;
   } catch (error) {
-    console.error("Erreur lors du tri des produits par emplacement :", error);
-    throw error;
+    throw new Error("Error while sorting products by location: " + error);
   }
 }
