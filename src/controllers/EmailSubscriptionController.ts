@@ -1,4 +1,3 @@
-import { json } from "sequelize";
 import EmailSubscription, {
   EmailSubscriptionAttributes,
 } from "../models/EmailSubscription.model";
