@@ -22,7 +22,7 @@ export async function createEmailSubscription(
 ) {
   try {
     if (await checkSubscriptionExists(email, productId)) {
-      return json({ message: "Subscription already exists" });
+      throw new Error("Subscription already exists");
     }
     const emailSubscription = await EmailSubscription.create({
       email,
@@ -30,6 +30,6 @@ export async function createEmailSubscription(
     } as EmailSubscriptionAttributes);
     return emailSubscription;
   } catch (error) {
-    throw error;
+    throw new Error("Error while creating the email subscription");
   }
 }
