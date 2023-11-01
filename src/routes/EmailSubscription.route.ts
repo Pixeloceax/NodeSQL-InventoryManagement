@@ -1,12 +1,7 @@
 import express from "express";
-import { createEmailSubscription } from "../controllers/EmailSubscriptionController";
-
+import * as emailSubscriptionController from "../controllers/EmailSubscription.controller";
 const router = express.Router();
 
-router.post("/", async (req, res) => {
-  const { email, productId } = req.body;
-  const emailSubscription = await createEmailSubscription(email, productId);
-  res.json(emailSubscription);
-});
+router.post("/", emailSubscriptionController.createEmailSubscription);
 
 export default router;

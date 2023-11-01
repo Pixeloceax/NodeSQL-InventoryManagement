@@ -1,3 +1,4 @@
+import { Request, Response } from "express";
 import EmailSubscription, {
   EmailSubscriptionAttributes,
 } from "../models/EmailSubscription.model";
@@ -15,10 +16,8 @@ async function checkSubscriptionExists(
   return !!emailSubscription;
 }
 
-export async function createEmailSubscription(
-  email: string,
-  productId: number
-) {
+export async function createEmailSubscription(req: Request, res: Response) {
+  const { email, productId } = req.body;
   try {
     if (await checkSubscriptionExists(email, productId)) {
       throw new Error("Subscription already exists");
@@ -27,8 +26,12 @@ export async function createEmailSubscription(
       email,
       product_id: productId,
     } as EmailSubscriptionAttributes);
-    return emailSubscription;
+    res.json(emailSubscription);
   } catch (error) {
-    throw new Error("Error while creating the email subscription");
+    res
+      .status(500)
+      .json({
+        message: "An error occurred while creating the email subscription.",
+      });
   }
 }
