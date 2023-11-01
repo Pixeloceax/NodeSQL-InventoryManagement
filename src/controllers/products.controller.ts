@@ -79,42 +79,28 @@ export async function getProductById(req: Request, res: Response) {
 }
 
 export async function updateProductById(req: Request, res: Response) {
-  const {
-    name,
-    price,
-    description,
-    category,
-    quantity,
-    supplier,
-    reorderThreshold,
-    location,
-    taxRate,
-    serialNumber,
-    image,
-    notes,
-  } = req.body;
+  const updatedProduct = req.body;
 
   try {
     const product = await Product.findByPk(req.params.id);
+
     if (!product) {
       res.status(404).json({ message: "Product not found" });
       return;
     }
 
-    await product.update({
-      name,
-      price,
-      description,
-      category,
-      quantity,
-      supplier,
-      reorderThreshold,
-      location,
-      serialNumber,
-      image,
-      notes,
-      taxRate,
-    } as ProductAttributes);
+    const isSameProduct = Object.keys(updatedProduct).every(
+      (key) => product[key as keyof typeof product] === updatedProduct[key]
+    );
+
+    if (isSameProduct) {
+      res.status(409).json({
+        message: "No changes were made on selected fields",
+      });
+      return;
+    }
+
+    await product.update(updatedProduct as ProductAttributes);
 
     res.json(product);
   } catch (error) {
