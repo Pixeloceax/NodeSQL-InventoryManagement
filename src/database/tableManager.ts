@@ -6,11 +6,11 @@ export default async function listTables() {
     const tables = queryResult[0].map(
       (row: any) => row[`Tables_in_${sequelize.config.database}`]
     );
-    console.log("Liste des tables crées :");
+    console.log("List of created tables:");
     tables.forEach((tableName) => {
       console.log(tableName);
     });
   } catch (error) {
-    console.error("Erreur lors de la récupération des tables :", error);
+    console.error("Error retrieving tables:", error);
   }
 }

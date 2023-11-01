@@ -10,9 +10,9 @@ export async function dbConnect() {
   sequelize
     .authenticate()
     .then(() => {
-      console.log("Connexion à la base de données réussie.");
+      console.log("Successfully connected to the database.");
     })
     .catch((error: any) => {
-      console.error("Impossible de se connecter à la base de données :", error);
+      console.error("Unable to connect to the database:", error);
     });
 }
