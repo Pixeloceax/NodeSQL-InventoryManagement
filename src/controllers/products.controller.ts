@@ -32,7 +32,8 @@ export async function addProduct(req: Request, res: Response) {
     const existingProduct = await Product.findOne({ where: { name: name } });
 
     if (existingProduct) {
-      throw new Error("Product already exists in the database");
+      res.status(409).json({ message: "Product already exists" });
+      return;
     }
 
     const newProduct = await Product.create({
